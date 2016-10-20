@@ -50,5 +50,14 @@ class CustomerController extends Controller
         }
     }
 
+    public function deleteCustomer(Request $request){
+
+     if($request-> ajax()){
+         Customer::destroy($request->id);
+         return response()->json(['sms'=>'delete success']);
+     }
+
+    }
+
 
 }

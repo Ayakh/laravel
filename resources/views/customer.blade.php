@@ -79,6 +79,8 @@
 
 
 $('#add').on('click',function () {
+    $('#save').val('save');
+    $('#frmCustomer').trigger('reset');
    $('#customer').modal('show');
 });
 
@@ -88,14 +90,43 @@ $('#add').on('click',function () {
         var form=$('#frmCustomer');
         var formData=form.serialize();
         var url=form.attr('action');
+        var state=$('#save').val();
+         var type='post';
+        if(state=='update'){
+            type='put';
+        }
         $.ajax({
-           type: 'post',
+           type: type,
             url: url,
             data: formData,
 
             success: function (data) {
-                console.log(data);
-                addRow(data);
+                var gender="";
+                if(data.gender==0){
+                    gender="Male";
+
+                }else {
+                    gender="Female";
+                }
+
+                var row = '<tr id=" customer '+data.id +'">' +
+                        '<td>'+data.id+ '</td>'+
+                        '<td>'+data.first_name + '</td>'+
+                        '<td>'+data.last_name + '</td>'+
+                        '<td>'+gender + '</td>'+
+                        '<td>'+data.email + '</td>'+
+                        '<td>'+data.phone + '</td>'+
+                        '<td><button class="btn btn-success btn-edit" data-id="'+ data.id+'" >Edit</button>'+
+                        '<button class="btn btn-danger btn-delete"  data-id="'+ data.id+'" >Delete</button></td>'+
+
+
+                        '</tr>';
+                  if(state=='save'){
+                      $('tbody').append(row);
+                  }else {
+                      $('#customer'+data.id).replaceWith(row);
+                  }
+
                 $('#frmCustomer').trigger('reset');
                 $('#first_name').focus();
             }
@@ -113,7 +144,7 @@ $('#add').on('click',function () {
             gender="Female";
         }
 
-        var row = '<tr>' +
+        var row = '<tr id=" customer '+data.id +'">' +
                     '<td>'+data.id+ '</td>'+
                     '<td>'+data.first_name + '</td>'+
                     '<td>'+data.last_name + '</td>'+
@@ -130,7 +161,44 @@ $('#add').on('click',function () {
     }
 
 
+    //****************update
 
+    $('tbody').delegate('.btn-edit','click',function () {
+       var value=$(this).data('id');
+        var url='{{URL::to('getUpdate')}}';
+        $.ajax({
+            type: 'get',
+            url: url,
+            data: {'id':value},
+        success:function (data) {
+            $('#id').val(data.id);
+            $('#first_name').val(data.first_name);
+            $('#last_name').val(data.last_name);
+            $('#gender').val(data.gender);
+            $('#email').val(data.email);
+            $('#phone').val(data.phone);
+            $('#save').val('update');
+            $('#customer').modal('show');
+        }
+        });
+    });
+
+//****************
+    $('tbody').delegate('.btn-delete','click',function () {
+        var value=$(this).data('id');
+        var url='{{URL::to('deleteCustomer')}}';
+        if(confirm('Are you sure to delete!')==true){
+            $.ajax({
+             type: 'post',
+                url: url,
+                data:{'id':value},
+                success:function (data) {
+                    $('#customer'+value).remove();
+
+                }
+            });
+        }
+    });
 
 </script>
 

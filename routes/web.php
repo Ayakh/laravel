@@ -16,4 +16,9 @@ use Illuminate\Routing;
 
 Route::get('/','CustomerController@index');
 Route::post('/newCustomer','CustomerController@newCustomer');
+Route::get('/getUpdate','CustomerController@getUpdate');
+Route::put('/newCustomer','CustomerController@newUpdate');
+Route::post('/deleteCustomer','CustomerController@deleteCustomer');
+
+
 

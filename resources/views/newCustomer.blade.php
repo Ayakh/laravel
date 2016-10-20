@@ -61,7 +61,7 @@
                  </div>
 
 
-
+                <input type="hidden" name="id" id="id" value="">
                  <div class="modal-footer">
                      <input type="submit" value="save" id="save" class="btn btn-primary">
 
